@@ -52,7 +52,6 @@ class DiscussionController {
   };
 
   deleteDiscussion = async (req: NextApiRequest, res: NextApiResponse) => {
-    console.log("reaached herer");
     try {
       const token = req.headers.authorization;
 

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { toast } from "react-toastify";
 import { PsychiatristCard } from "../PsychiatristCard";
+import AllPsychiatrist from "../AllPsychiatrist";
 
 export default function PopularPsychiatrists() {
   const [isloading, setloading] = useState(true);
@@ -22,55 +23,7 @@ export default function PopularPsychiatrists() {
       _id: string;
     }[]
   >([]);
-  async function getPsychiatrists() {
-    var users = await fetch("/api/get-user/psychiatrists", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (users.status == 200) {
-      const data = await users.json();
-      setUsers(data);
-      setloading(false);
-    } else {
-      toast.error("error getting datas");
-      setloading(false);
-    }
-  }
-  useEffect(() => {
-    getPsychiatrists();
-  }, []);
-  const settings = {
-    dots: false,
-    infinite: true,
-    slidesToShow: 3,
-    // centerMode: true,
-    slidesToScroll: 2,
-    arrows: false,
-    autoplay: false,
-    speed: 500,
-    cssEase: "linear",
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: false,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          infinite: true,
-          dots: false,
-        },
-      },
-    ],
-  };
+
   return (
     <div id="courses">
       <div className="mx-auto max-w-7xl sm:py-8 px-4 lg:px-8 ">
@@ -86,11 +39,7 @@ export default function PopularPsychiatrists() {
           </Link>
         </div>
 
-        <Slider {...settings}>
-          {users.slice(0, 3).map((items, i) => (
-            <PsychiatristCard items={items} key={i} />
-          ))}
-        </Slider>
+        <AllPsychiatrist isPopularPsychiatrists={true} />
       </div>
     </div>
   );

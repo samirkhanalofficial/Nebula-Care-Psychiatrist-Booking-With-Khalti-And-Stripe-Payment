@@ -40,7 +40,6 @@ class UserController {
             password: hash,
             age: value.age,
           };
-          console.log(value.email);
 
           const userExists = await this.userService.getUserByEmail(value.email);
           if (userExists)
@@ -95,7 +94,6 @@ class UserController {
             price: value.amount,
             nmcNumber: value.nmcNumber,
           };
-          console.log(value.email);
 
           const userExists = await this.userService.getUserByEmail(value.email);
           if (userExists)
@@ -132,7 +130,6 @@ class UserController {
             password: hash,
             age: value.age,
           };
-          console.log(value.email);
 
           const userExists = await this.userService.getUserByEmail(value.email);
           if (userExists)
@@ -157,7 +154,6 @@ class UserController {
     try {
       const options = req.query.role;
       const getUser = await this.userService.getList(options!.toString());
-      console.log(getUser);
       return res.status(200).json(getUser);
     } catch (e: any) {
       res.status(400).json({ message: e.toString() });

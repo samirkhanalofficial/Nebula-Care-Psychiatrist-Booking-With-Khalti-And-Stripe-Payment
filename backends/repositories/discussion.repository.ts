@@ -22,7 +22,7 @@ class DiscussionRepository {
     return discussion;
   };
   getAllDiscussion = async () => {
-    const discussions = await Discussion.find();
+    const discussions = await Discussion.find().sort({ _id: -1 });
     return discussions;
   };
   addComment = async (email: string, id: string, comm: string) => {

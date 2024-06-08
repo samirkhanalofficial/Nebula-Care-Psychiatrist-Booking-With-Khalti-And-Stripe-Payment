@@ -127,7 +127,6 @@ class MeetingController {
     if (!payload) {
       return res.status(400).json({ message: "Login error" });
     }
-    console.log(payload);
     if (payload.role != "psychiatrists") {
       return res.status(400).json({ message: "Permission Denied" });
     }

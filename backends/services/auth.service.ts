@@ -13,7 +13,7 @@ class AuthService {
       id: user.id,
       email: user.email,
       loginAt: Date(),
-      role:user.role,
+      role: user.role,
     };
     const token = await jwt.sign(payload, process.env.JWT_KEY!, {
       expiresIn: 360000,
@@ -26,7 +26,6 @@ class AuthService {
 
       return payload as payloadType;
     } catch (e) {
-      console.log("e:", e);
       return null;
     }
   };

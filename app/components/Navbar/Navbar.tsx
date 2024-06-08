@@ -1,12 +1,13 @@
 import { Disclosure } from "@headlessui/react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import Drawer from "./Drawer";
 import Drawerdata from "./Drawerdata";
 import Signdialog from "./Signdialog";
 import Registerdialog from "./Registerdialog";
 import { usePathname, useRouter } from "next/navigation";
+import useAuth from "@/hooks/useAuth";
 
 interface NavigationItem {
   name: string;
@@ -44,8 +45,10 @@ const CustomLink = ({
 };
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const { isSignedIn } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const [currentLink, setCurrentLink] = useState(pathname);
 
   const handleLinkClick = (href: string) => {
@@ -102,12 +105,50 @@ const Navbar = () => {
 
             {/* SIGNIN DIALOG */}
 
-            <Signdialog />
+            {!isSignedIn && <Signdialog />}
 
             {/* REGISTER DIALOG */}
 
-            <Registerdialog />
-
+            {!isSignedIn && <Registerdialog />}
+            {isSignedIn && (
+              <>
+                <CustomLink
+                  href={"/profile"}
+                  onClick={() => handleLinkClick("/profile")}
+                >
+                  <span
+                    className={classNames(
+                      "/profile" === currentLink
+                        ? "underline-links"
+                        : "text-slategray",
+                      "px-3 py-4 text-lg font-normal opacity-75 hover:opacity-100"
+                    )}
+                    aria-current={"/profile" ? "page" : undefined}
+                  >
+                    My Profile
+                  </span>
+                </CustomLink>
+                <CustomLink
+                  href={"/"}
+                  onClick={() => {
+                    localStorage.clear();
+                    window.location.href = "/";
+                  }}
+                >
+                  <span
+                    className={classNames(
+                      "/logout" === currentLink
+                        ? "underline-links"
+                        : "text-slategray",
+                      "px-3 py-4 text-lg font-normal opacity-75 hover:opacity-100"
+                    )}
+                    aria-current={"/logout" ? "page" : undefined}
+                  >
+                    Logout
+                  </span>
+                </CustomLink>
+              </>
+            )}
             {/* DRAWER FOR MOBILE VIEW */}
 
             {/* DRAWER ICON */}

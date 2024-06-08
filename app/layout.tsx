@@ -1,7 +1,8 @@
 import "./globals.css";
 import Navbar from "./components/Navbar/index";
 import Footer from "./components/Footer/Footer";
-import { ToastContainer } from "react-toastify";
+import "react-datepicker/dist/react-datepicker.css";
+import MyToastContainer from "./components/MyToastContainer";
 
 export const metadata = {
   title: "NebulaCare",
@@ -19,7 +20,7 @@ export default function RootLayout({
         <Navbar />
         {children}
         <Footer />
-        <ToastContainer />
+        <MyToastContainer />
       </body>
     </html>
   );
