@@ -6,10 +6,8 @@ import Loading from "../components/Loading";
 import Link from "next/link";
 import Banner2 from "../components/Banner2";
 export default function Discussion() {
-  const [query, setQuery] = useState("");
   const [isloading, setloading] = useState(true);
   const [max, setMax] = useState(8);
-  const [isPosting, setposting] = useState(false);
   const [discussions, setDiscussions] = useState<
     {
       email: string;
@@ -42,30 +40,7 @@ export default function Discussion() {
   useEffect(() => {
     getData();
   }, []);
-  async function addPost(e: FormEvent) {
-    e.preventDefault();
-    setposting(true);
-    const token = await localStorage.getItem("token");
-    const res = await fetch("/api/discussion", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: token || "",
-      },
-      body: JSON.stringify({ question: query }),
-    });
-    if (res.status != 200) {
-      const dis = await res.json();
-      toast.error(dis.message);
-      setposting(false);
-    } else {
-      toast.success("Query Added Successfully");
-      setQuery("");
-      const dis = await res.json();
-      setDiscussions([dis, ...discussions]);
-      setposting(false);
-    }
-  }
+
   if (isloading)
     return (
       <center>

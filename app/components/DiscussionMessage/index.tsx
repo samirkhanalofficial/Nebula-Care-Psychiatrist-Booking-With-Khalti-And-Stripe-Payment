@@ -2,16 +2,40 @@
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+import { toast } from "react-toastify";
 
 export function DiscussionMessage() {
   const [query, setQuery] = useState("");
+  const [isPosting, setposting] = useState(false);
   const router = useRouter();
+  async function addPost(e: FormEvent) {
+    e.preventDefault();
+    setposting(true);
+    const token = await localStorage.getItem("token");
+    const res = await fetch("/api/discussion", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: token || "",
+      },
+      body: JSON.stringify({ question: query }),
+    });
+    if (res.status != 200) {
+      const dis = await res.json();
+      toast.error(dis.message);
+      setposting(false);
+    } else {
+      toast.success("Query Added Successfully");
+      setQuery("");
+      const dis = await res.json();
+      window.location.href = "/discussion";
+      setposting(false);
+    }
+  }
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
+      onSubmit={addPost}
       className="relative text-white focus-within:text-white flex flex-row-reverse input-shadow rounded-full pt-5 lg:pt-0"
     >
       <input
