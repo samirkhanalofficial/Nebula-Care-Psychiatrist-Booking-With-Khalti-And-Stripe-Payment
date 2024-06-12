@@ -11,11 +11,11 @@ import {
 import { AuthService, authService } from "../services/auth.service";
 
 const AddQueValidation = Joi.object({
-  question: Joi.string().min(10).max(255).required(),
+  question: Joi.string().min(10).max(9999).required(),
 });
 
 const AddCommentValidation = Joi.object({
-  comment: Joi.string().min(10).max(255).required(),
+  comment: Joi.string().min(10).max(9999).required(),
 });
 class DiscussionController {
   constructor(

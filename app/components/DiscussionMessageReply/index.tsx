@@ -5,30 +5,30 @@ import { FormEvent, useState } from "react";
 import { toast } from "react-toastify";
 import Loading from "../Loading";
 
-export function DiscussionMessage() {
+export function DiscussionMessageReply({ id }: { id: string }) {
   const { isSignedIn, token } = useAuth();
   const [query, setQuery] = useState("");
   const [isPosting, setposting] = useState(false);
-  async function addDiscussion(e: FormEvent) {
+  async function addDiscussionReply(e: FormEvent) {
     e.preventDefault();
     setposting(true);
     try {
       if (!isSignedIn) throw "Please login First";
 
-      const res = await fetch("/api/discussion", {
+      const res = await fetch("/api/discussion/" + id + "/comment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           authorization: token || "",
         },
-        body: JSON.stringify({ question: query }),
+        body: JSON.stringify({ comment: query }),
       });
       const dis = await res.json();
       if (res.status != 200) {
         throw dis.message;
       } else {
-        toast.success("Question Added Successfully");
-        window.location.href = "/discussion";
+        toast.success("Reply Added Successfully");
+        window.location.href = "/discussion/" + id;
       }
     } catch (e: any) {
       toast.error(e.toString());
@@ -36,17 +36,17 @@ export function DiscussionMessage() {
       setposting(false);
     }
   }
-
+  if (id == "" || !id) return <></>;
   return (
     <form
-      onSubmit={addDiscussion}
+      onSubmit={addDiscussionReply}
       className="relative text-white focus-within:text-white flex flex-row-reverse input-shadow rounded-full pt-5 lg:pt-0"
     >
       <input
         type="text"
         name="q"
         className="py-6 lg:py-8 text-lg w-full text-black opacity-75 rounded-full pl-8 focus:outline-none focus:text-black"
-        placeholder="Type your message..."
+        placeholder="Type your suggestion..."
         autoComplete="off"
         onChange={(e) => setQuery(e.target.value)}
         value={query}

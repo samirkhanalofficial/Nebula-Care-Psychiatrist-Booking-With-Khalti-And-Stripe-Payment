@@ -4,8 +4,10 @@ import React, { FormEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Loading from "../components/Loading";
 import Link from "next/link";
-import Banner2 from "../components/Banner2";
+import Banner2 from "../components/DiscussionPageBanner";
+import useAuth from "@/hooks/useAuth";
 export default function Discussion() {
+  const { isSignedIn, token } = useAuth();
   const [isloading, setloading] = useState(true);
   const [max, setMax] = useState(8);
   const [discussions, setDiscussions] = useState<
@@ -18,8 +20,6 @@ export default function Discussion() {
   const router = useRouter();
 
   async function getData() {
-    const token = await localStorage.getItem("token");
-    if (!token) return router.push("/login");
     const res = await fetch("/api/discussion/", {
       method: "GET",
       headers: {
@@ -67,7 +67,7 @@ export default function Discussion() {
                 <br />
                 <Link
                   className=" p-2 w-full block text-center hover:bg-slate-50 hover:rounded-2xl transition-all duration-75"
-                  href={"/discussions/" + discussion._id}
+                  href={"/discussion/" + discussion._id}
                 >
                   View Discussion
                 </Link>

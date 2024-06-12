@@ -1,13 +1,18 @@
 import Image from "next/image";
-import { SearchBox } from "../SearchBox";
-import { DiscussionMessage } from "../DiscussionMessage";
+import { DiscussionMessageReply } from "../DiscussionMessageReply";
 
-const Banner2 = () => {
+const DiscussionReplyBanner = ({
+  id,
+  message,
+}: {
+  id: string;
+  message: string;
+}) => {
   return (
     <div id="home-section" className="bg-lightkblue">
       <div className="mx-auto max-w-7xl pt-20 sm:pb-24 px-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 space-x-1">
-          <div className="col-span-6 flex flex-col justify-evenly">
+          <div className="col-span-12 flex flex-col gap-y-3">
             <div className="flex gap-2 mx-auto lg:mx-0">
               <Image
                 src="/assets/banner/check.svg"
@@ -16,22 +21,25 @@ const Banner2 = () => {
                 height={20}
               />
               <h3 className="text-kellygreen text-sm font-semibold text-center lg:text-start">
-                Follow the Healty Guidelines
+                Please Follow rules & regulations
               </h3>
             </div>
             <h1 className="text-midnightblue text-4xl sm:text-5xl font-semibold text-center lg:text-start lh-120 pt-5 lg:pt-0">
-              Share Your problems.
+              Question
             </h1>
+            <br />
+            <br />
             <h3 className="text-charcoal text-lg font-normal text-center lg:text-start opacity-75 pt-5 lg:pt-0">
-              We believe sharing your problem makes you better, so why not ? Our
-              experts are there to give solution for you.
+              <b>Anonymous User</b> <br />
+              {message}
             </h3>
 
-            <div>
-              <DiscussionMessage />
+            <br />
+            <div className="mx-auto w-full">
+              <DiscussionMessageReply id={id} />
             </div>
 
-            <div className="flex items-center justify-between pt-10 lg:pt-4">
+            {/* <div className="flex items-center justify-between pt-10 lg:pt-4">
               <div className="flex gap-2">
                 <Image
                   src="/assets/banner/check-circle.svg"
@@ -68,21 +76,21 @@ const Banner2 = () => {
                   Free of Cost
                 </p>
               </div>
-            </div>
+            </div> */}
           </div>
 
-          <div className="col-span-6 flex justify-center">
+          {/* <div className="col-span-6 flex justify-center">
             <Image
               src="/assets/banner/mahila.png"
               alt="nothing"
               width={1000}
               height={805}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
   );
 };
 
-export default Banner2;
+export default DiscussionReplyBanner;

@@ -13,6 +13,7 @@ export default function AllPsychiatrist({
   isPopularPsychiatrists?: boolean;
 }) {
   const [isloading, setloading] = useState(true);
+  const [max, setMax] = useState(8);
   const searchParams = useSearchParams();
   const search = searchParams?.get("search") ?? "";
   const [users, setUsers] = useState<
@@ -71,19 +72,22 @@ export default function AllPsychiatrist({
             .filter((item) =>
               item.fullName
                 .toLocaleLowerCase()
-                .startsWith(search.toLocaleLowerCase())
+                .includes(search.toLocaleLowerCase())
             )
+            .slice(0, max)
             .map((items, i) => (
               <PsychiatristCard showBest={false} key={i} items={items} />
             ))}
         </div>
         {isloading && <Loading />}
         {!isloading &&
-          users.filter((item) =>
-            item.fullName
-              .toLocaleLowerCase()
-              .startsWith(search.toLocaleLowerCase())
-          ).length == 0 && (
+          users
+            .filter((item) =>
+              item.fullName
+                .toLocaleLowerCase()
+                .includes(search.toLocaleLowerCase())
+            )
+            .slice(0, max).length == 0 && (
             <center>
               <br />
               <br />
@@ -94,6 +98,31 @@ export default function AllPsychiatrist({
               The search result for your query is Empty.
             </center>
           )}
+
+        <center>
+          {users.filter((item) =>
+            item.fullName
+              .toLocaleLowerCase()
+              .includes(search.toLocaleLowerCase())
+          ).length > max && (
+            <button
+              onClick={() => {
+                if (
+                  users.filter((item) =>
+                    item.fullName
+                      .toLocaleLowerCase()
+                      .includes(search.toLocaleLowerCase())
+                  ).length > max
+                ) {
+                  setMax(max + 8);
+                }
+              }}
+              className="bg-blue-600 hover:bg-blue-700 active:bg-blue-300 text-white py-4 px-10 rounded-2xl"
+            >
+              View More
+            </button>
+          )}
+        </center>
       </div>
     </div>
   );

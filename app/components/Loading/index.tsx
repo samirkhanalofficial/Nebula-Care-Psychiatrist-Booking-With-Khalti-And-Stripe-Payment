@@ -1,7 +1,14 @@
 import React from "react";
 import { ScaleLoader } from "react-spinners";
 
-export default function Loading() {
+export default function Loading({
+  onlySpinner = false,
+  color = "#03c4ff",
+}: {
+  onlySpinner?: boolean;
+  color?: string;
+}) {
+  if (onlySpinner) return <ScaleLoader color={color} />;
   return (
     <div
       style={{
@@ -11,7 +18,7 @@ export default function Loading() {
         justifyContent: "center",
       }}
     >
-      <ScaleLoader color="#03c4ff" />
+      <ScaleLoader color={color} />
     </div>
   );
 }
