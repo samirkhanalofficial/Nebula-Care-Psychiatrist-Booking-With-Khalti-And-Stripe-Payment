@@ -38,6 +38,7 @@ class UserController {
             fullName: value.fullName,
             email: value.email,
             password: hash,
+            image: "",
             age: value.age,
           };
 
@@ -78,6 +79,7 @@ class UserController {
         age: Joi.number().min(15).max(99).required(),
         amount: Joi.string().required(),
         nmcNumber: Joi.string().required(),
+        image: Joi.string().required(),
       }).validate(req.body);
       if (error) return res.status(400).json({ message: error.message });
 
@@ -93,6 +95,7 @@ class UserController {
             age: value.age,
             price: value.amount,
             nmcNumber: value.nmcNumber,
+            image: value.image,
           };
 
           const userExists = await this.userService.getUserByEmail(value.email);
@@ -127,6 +130,7 @@ class UserController {
           const newData: userType = {
             fullName: value.fullName,
             email: value.email,
+            image: "",
             password: hash,
             age: value.age,
           };

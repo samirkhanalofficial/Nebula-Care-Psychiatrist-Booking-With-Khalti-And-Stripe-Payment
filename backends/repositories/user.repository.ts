@@ -41,6 +41,9 @@ class UserRepository {
   deleteUser = async (id: string) => {
     await User.findOneAndDelete({ _id: id });
   };
+  updateRating = async (id: string, rating: number) => {
+    return await User.findByIdAndUpdate(id, { rating }, { new: true });
+  };
 }
 let userRepository = new UserRepository();
 

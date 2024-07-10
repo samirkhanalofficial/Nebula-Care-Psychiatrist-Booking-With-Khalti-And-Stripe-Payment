@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 const Signin = () => {
-  let [isOpen, setIsOpen] = useState(false);
+  let [isOpen, setIsOpen] = useState(true);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
@@ -22,10 +22,6 @@ const Signin = () => {
     e.preventDefault();
     setloading(true);
     try {
-      var url = "/api/auth";
-      if (role == "") throw "Please select a role.";
-      if (role == "psychiatrist") url = "/api/psychiatrists/login";
-      if (role == "admin") url = "/api/admin/login";
       setloading(true);
       let result = await fetch("/api/auth", {
         method: "POST",
@@ -35,10 +31,33 @@ const Signin = () => {
         body: JSON.stringify({ email, password }),
       });
       if (result.status == 200) {
-        const loginResult: { token: string } = await result.json();
+        const loginResult: {
+          token: string;
+          user: {
+            _id: string;
+            role: string;
+            fullName: string;
+            email: string;
+            image: string;
+            age: number;
+            price: number;
+            nmcNumber: string;
+          };
+        } = await result.json();
+        console.log(loginResult.user);
         if (loginResult.token) {
           await localStorage.setItem("token", loginResult.token);
-          await localStorage.setItem("role", role);
+          await localStorage.setItem("role", loginResult.user.role);
+          await localStorage.setItem("id", loginResult.user._id);
+          await localStorage.setItem("fullName", loginResult.user.fullName);
+          await localStorage.setItem("email", loginResult.user.email);
+          await localStorage.setItem("image", loginResult.user.image);
+          await localStorage.setItem("nmcNumber", loginResult.user.nmcNumber);
+          await localStorage.setItem("age", loginResult.user.age.toString());
+          await localStorage.setItem(
+            "price",
+            loginResult.user.price.toString()
+          );
           toast.success("Login Success");
           setIsOpen(false);
           window.location.href = "/";
@@ -54,18 +73,6 @@ const Signin = () => {
   }
   return (
     <>
-      <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:pr-0">
-        <div className="hidden lg:block">
-          <button
-            type="button"
-            className="text-lg text-Blueviolet font-medium"
-            onClick={openModal}
-          >
-            Log In
-          </button>
-        </div>
-      </div>
-
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
@@ -139,23 +146,6 @@ const Signin = () => {
                               className="relative block w-full appearance-none rounded-none rounded-b-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                               placeholder="Password"
                             />
-                          </div>
-                          <div>
-                            <label htmlFor="role" className="sr-only">
-                              Role
-                            </label>
-                            <select
-                              id="role"
-                              name="role"
-                              onChange={(e) => setRole(e.target.value)}
-                              required
-                              value={role}
-                              className="relative block w-full appearance-none rounded-none rounded-b-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                            >
-                              <option value="">Select a Role</option>
-                              <option value="user">User</option>
-                              <option value="psychiatrist">Psychiatrist</option>
-                            </select>
                           </div>
                         </div>
 

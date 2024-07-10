@@ -3,6 +3,8 @@ import Navbar from "./components/Navbar/index";
 import Footer from "./components/Footer/Footer";
 import "react-datepicker/dist/react-datepicker.css";
 import MyToastContainer from "./components/MyToastContainer";
+import { Suspense } from "react";
+import Loading from "./components/Loading";
 
 export const metadata = {
   title: "NebulaCare",
@@ -18,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Navbar />
-        {children}
+        <Suspense fallback={<Loading />}>{children}</Suspense>
         <Footer />
         <MyToastContainer />
       </body>

@@ -10,7 +10,6 @@ import DatePicker from "react-datepicker";
 import Image from "next/image";
 import Select from "react-select";
 import useAuth from "@/hooks/useAuth";
-import { StarIcon } from "@heroicons/react/24/solid";
 export type userType = {
   _id: string;
   fullName: string;
@@ -19,7 +18,7 @@ export type userType = {
   confirmPassword: string;
   date: string;
 };
-export default function Register({ params, searchParams }: any) {
+export default function Rate({ params, searchParams }: any) {
   const success = searchParams.success ?? "";
   const { isSignedIn, token } = useAuth();
   const [loading, setloading] = useState(true);
@@ -31,10 +30,11 @@ export default function Register({ params, searchParams }: any) {
   const [price, setPrice] = useState("");
   const [name, setName] = useState("");
   const [nmcNumber, setNmcNumber] = useState("");
-  const [rating, setRating] = useState(0);
   const [image, setImage] = useState(imageReg);
   const [appointmentDone, setappoinmentDone] = useState(false);
   const [time, setTime] = useState("");
+  const [rating, setRating] = useState(1);
+  const [review, setReview] = useState("");
   const [ratings, setRatings] = useState<
     { _id: string; doctor: string; rating: number; message: string }[]
   >([]);
@@ -49,21 +49,20 @@ export default function Register({ params, searchParams }: any) {
     } else {
       const data = await res.json();
       setImage(data.image);
-      setRating(data.rating);
       setPrice(data.price);
       setNmcNumber(data.nmcNumber);
       setName(data.fullName);
       setloading(false);
     }
   }
-  async function addMeeting() {
+  async function addRating() {
     try {
       setFormLoading(true);
-      var res = await fetch("/api/admin/meetings/create", {
+      var res = await fetch("/api/ratings", {
         method: "POST",
         body: JSON.stringify({
-          date: date.toISOString().split("T")[0],
-          time: time,
+          rating,
+          message: review,
           doctor: params.id,
         }),
         headers: {
@@ -75,7 +74,8 @@ export default function Register({ params, searchParams }: any) {
       if (res.status != 200) {
         throw data.message;
       } else {
-        window.location = data.payment_url;
+        router.push("/profile");
+        toast.success("Rating added successfully.");
       }
     } catch (e: any) {
       toast.error(e);
@@ -85,7 +85,7 @@ export default function Register({ params, searchParams }: any) {
   }
   async function getRatings() {
     const testId = await params.id;
-    var res = await fetch("/api/ratings/?id=" + testId);
+    var res = await fetch("/api/ratings/?id" + testId);
     if (res.status != 200) {
       toast.error("Error getting Ratings");
       setloading(false);
@@ -114,14 +114,14 @@ export default function Register({ params, searchParams }: any) {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          addMeeting();
+          addRating();
         }}
       >
         <>
           <div className="mx-auto max-w-7xl sm:py-8 px-4 lg:px-8 ">
             <div className="flex justify-between items-center">
               <h3 className="text-midnightblue text-4xl lg:text-55xl font-semibold mb-5 sm:mb-0">
-                Booking Details.
+                Give Rating.
               </h3>
             </div>
           </div>
@@ -131,42 +131,6 @@ export default function Register({ params, searchParams }: any) {
             <center>
               <b> No Psychiatrist Found</b>
             </center>
-          ) : success != "" ? (
-            <div className="mx-auto w-2/3  flex flex-col md:flex-row gap-20 items-center">
-              <div>
-                <Image
-                  className="rounded-full"
-                  src={success == "true" ? "/success.webp" : "/fail.png"}
-                  width={300}
-                  height={300}
-                  alt="status"
-                />
-              </div>
-              <div>
-                <div className={"text-3xl"}>
-                  <h1
-                    style={{
-                      color: success == "true" ? "" : "red",
-                    }}
-                  >
-                    Payment {success == "true" ? "Success" : "Failed"}
-                  </h1>
-                </div>
-                <div>
-                  <b>Reference ID : {searchParams.meetingid ?? ""}</b>
-                </div>
-                Please take a screenshot of this id, this will help you to claim
-                your money back in case of payment errors.
-                <br />
-                <br />
-                <Link
-                  href="/profile"
-                  className="bg-blue-600 active:bg-blue-400 hover:bg-blue-800 text-white p-3 rounded-md"
-                >
-                  View Bookings
-                </Link>
-              </div>
-            </div>
           ) : (
             <div className="md:flex gap-10 mx-auto max-w-7xl sm:py-8 px-4 lg:px-8 bg-white m-3  pt-3 pb-12 my-20 shadow-2xl  rounded-3xl ">
               <div className="flex flex-col md:flex-row w-full gap-10 items-center justify-center">
@@ -185,45 +149,41 @@ export default function Register({ params, searchParams }: any) {
                   <i>
                     Rs. <span className="text-2xl">{price}</span>{" "}
                   </i>
-                  <br />
-                  <i>
-                    Rating ({ratings.length}) :{" "}
-                    <span className="text-xl text-yellow-500">
-                      {rating.toFixed(2)}
-                    </span>{" "}
-                  </i>
                 </div>
               </div>
               <div className="md:w-2/3">
-                <div className={"font-bold"}>Date</div>
                 <div className="w-full">
-                  <DatePicker
-                    inline
-                    className="bg-slate-50 w-full block  p-4 rounded-md "
-                    minDate={new Date()}
-                    showIcon={true}
-                    selected={date}
-                    onChange={(newdate) => newdate && setDate(newdate)}
-                  />
+                  <div className={"font-bold"}>Rating</div>
+                  <div>
+                    <Select
+                      defaultValue={{
+                        value: 1,
+                        label: "1",
+                      }}
+                      options={[1, 2, 3, 4, 5].map((item, index) => ({
+                        value: item,
+                        label: `${item}`,
+                      }))}
+                      placeholder={"Select a Value"}
+                      onChange={(value) => value && setRating(value?.value)}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="review" className="sr-only">
+                      Review
+                    </label>
+                    <textarea
+                      id="review"
+                      name="review"
+                      onChange={(e) => setReview(e.target.value)}
+                      autoComplete="review"
+                      required
+                      className="relative block w-full appearance-none rounded-none rounded-b-md border border-grey500 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                      placeholder="Review"
+                    />
+                  </div>
                 </div>
-                <div className={"font-bold"}>Time</div>
-                <div>
-                  <Select
-                    options={[
-                      10, 10, 11, 11, 12, 12, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6,
-                      6, 7, 7, 8, 8, 9, 9, 10, 10,
-                    ].map((item, index) => ({
-                      value: `${item}:${index % 2 == 0 ? "00" : "30"} ${
-                        index < 2 ? "AM" : "PM"
-                      }`,
-                      label: `${item}:${index % 2 == 0 ? "00" : "30"} ${
-                        index < 2 ? "AM" : "PM"
-                      }`,
-                    }))}
-                    placeholder={"Select a Time"}
-                    onChange={(value) => value && setTime(value?.value)}
-                  />
-                </div>
+
                 <br />
                 <button
                   disabled={formLoading}
@@ -232,42 +192,18 @@ export default function Register({ params, searchParams }: any) {
                   }
                 >
                   {formLoading && "Loading..."}
-                  {!formLoading && "Pay With Khalti"}
+                  {!formLoading && "Rate"}
                 </button>
+                <br />
+
+                <small>
+                  If you give multiple rating to same doctor, previous ratings
+                  of your&apos;s will be removed.
+                </small>
               </div>
             </div>
           )}
         </>
-        <br />
-        <br />
-        {!loading && (
-          <div className="p-3 md:p-7 bg-white shadow-2xl rounded-3xl md:mx-20 ">
-            <h2 className=" text-3xl flex justify-start space-x-3 items-center">
-              <div>Ratings ({ratings.length}) : </div>
-              <div className="flex space-x-2 items-center">
-                <StarIcon className="text-yellow-500" width={20} />
-                <span>{rating.toFixed(2)}</span>
-              </div>
-            </h2>
-            <br />
-            {ratings.map((rat) => (
-              <div
-                className="border-gray-400 border-2 rounded-2xl p-3 flex justify-between items-center"
-                key={rat._id}
-              >
-                <div>
-                  <b>Anonymous User</b>
-                  <br />
-                  <small>{rat.message}</small>
-                </div>
-                <div className="flex space-x-2 items-center">
-                  <StarIcon className="text-yellow-500" width={20} />
-                  <span>{rat.rating.toFixed(2)}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </form>
     </>
   );

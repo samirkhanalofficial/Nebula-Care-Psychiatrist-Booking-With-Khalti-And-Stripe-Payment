@@ -8,6 +8,7 @@ export function PsychiatristCard({
   showBest?: boolean;
   items: {
     age: number;
+    rating: number;
     email: string;
     fullName: string;
     image: string;
@@ -53,15 +54,13 @@ export function PsychiatristCard({
           </div>
 
           <div className="flex justify-between items-center py-6">
-            <div className="flex gap-4">
-              <h3 className="text-red text-22xl font-medium">4</h3>
+            <div className="flex gap-1">
               <div className="flex">
                 <StarIcon className="h-5 w-5 text-gold" />
-                <StarIcon className="h-5 w-5 text-gold" />
-                <StarIcon className="h-5 w-5 text-gold" />
-                <StarIcon className="h-5 w-5 text-gold" />
-                <StarIcon className="h-5 w-5 text-gold" />
               </div>
+              <h3 className="text-red text-22xl font-medium">
+                {items.rating.toFixed(2) ?? 0}
+              </h3>
             </div>
             <div>
               <h3 className="text-3xl font-medium">Rs. {items.price}</h3>

@@ -105,11 +105,34 @@ const Navbar = () => {
 
             {/* SIGNIN DIALOG */}
 
-            {!isSignedIn && <Signdialog />}
+            {!isSignedIn && (
+              <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:pr-0">
+                <div className="hidden lg:block">
+                  <Link
+                    type="button"
+                    className="text-lg text-Blueviolet font-medium"
+                    href={"/login"}
+                  >
+                    Log In
+                  </Link>
+                </div>
+              </div>
+            )}
 
             {/* REGISTER DIALOG */}
 
-            {!isSignedIn && <Registerdialog />}
+            {!isSignedIn && (
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto  sm:pr-0">
+                <div className="hidden lg:block">
+                  <Link
+                    className="text-Blueviolet text-lg font-medium ml-9 py-5 px-16 transition duration-150 ease-in-out rounded-full bg-semiblueviolet hover:text-white hover:bg-Blueviolet"
+                    href={"/register"}
+                  >
+                    Sign up
+                  </Link>
+                </div>
+              </div>
+            )}
             {isSignedIn && (
               <>
                 <CustomLink
@@ -121,7 +144,7 @@ const Navbar = () => {
                       "/profile" === currentLink
                         ? "underline-links"
                         : "text-slategray",
-                      "px-3 py-4 text-lg font-normal opacity-75 hover:opacity-100"
+                      "px-3 py-4 text-lg font-normal opacity-75 hover:opacity-100 hidden md:block"
                     )}
                     aria-current={"/profile" ? "page" : undefined}
                   >
@@ -140,7 +163,7 @@ const Navbar = () => {
                       "/logout" === currentLink
                         ? "underline-links"
                         : "text-slategray",
-                      "px-3 py-4 text-lg font-normal opacity-75 hover:opacity-100"
+                      "px-3 py-4 text-lg font-normal opacity-75 hover:opacity-100 hidden md:block"
                     )}
                     aria-current={"/logout" ? "page" : undefined}
                   >
@@ -164,7 +187,7 @@ const Navbar = () => {
             {/* DRAWER LINKS DATA */}
 
             <Drawer isOpen={isOpen} setIsOpen={setIsOpen}>
-              <Drawerdata />
+              <Drawerdata isSignedIn={isSignedIn} />
             </Drawer>
           </div>
         </div>

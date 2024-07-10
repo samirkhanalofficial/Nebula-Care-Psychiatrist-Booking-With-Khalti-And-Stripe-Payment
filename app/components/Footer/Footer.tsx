@@ -4,7 +4,7 @@ import Image from "next/image";
 interface ProductType {
   id: number;
   section: string;
-  link: string[];
+  link: any[];
 }
 
 interface socialLinks {
@@ -35,18 +35,32 @@ const products: ProductType[] = [
   {
     id: 1,
     section: "Psychiatrist",
-    link: ["All Psychiatrists", "Login", "Join Our Team"],
+    link: [
+      { href: "/psychiatrists", title: "All Psychiatrists" },
+      { href: "/login", title: "Login" },
+      { href: "/register", title: "Join Our Team" },
+    ],
   },
 
   {
     id: 3,
     section: "User",
-    link: ["Profile", "Appoinment History"],
+    link: [
+      { href: "/profile", title: "Appoinment History" },
+
+      { href: "/login", title: "Login" },
+      { href: "/register", title: "Join Our Team" },
+    ],
   },
   {
     id: 2,
     section: "Admin",
-    link: ["Login"],
+    link: [
+      { href: "/profile", title: "Profile" },
+
+      { href: "/login", title: "Login" },
+      { href: "/admin/dashboard", title: "Admins Management" },
+    ],
   },
 ];
 
@@ -94,13 +108,13 @@ const footer = () => {
               {product.section}
             </p>
             <ul>
-              {product.link.map((link: string, index: number) => (
+              {product.link.map((link, index: number) => (
                 <li key={index} className="mb-5">
                   <Link
-                    href="/"
+                    href={link.href}
                     className="text-darkgray text-base font-normal mb-6 space-links"
                   >
-                    {link}
+                    {link.title}
                   </Link>
                 </li>
               ))}

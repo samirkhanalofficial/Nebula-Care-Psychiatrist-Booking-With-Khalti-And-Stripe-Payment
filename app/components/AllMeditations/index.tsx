@@ -7,9 +7,12 @@ import Loading from "../Loading";
 import { SearchBoxMeditation } from "../SearchBoxMeditation";
 import { MeditationCard } from "../MeditationCard";
 import { Dialog, Transition } from "@headlessui/react";
+import useAuth from "@/hooks/useAuth";
+import Link from "next/link";
 
 export default function AllMeditations() {
   const [isloading, setloading] = useState(true);
+  const { role } = useAuth();
   const [max, setMax] = useState(8);
 
   const [showDialog, setShowDialog] = useState(false);
@@ -111,6 +114,17 @@ export default function AllMeditations() {
               <SearchBoxMeditation defaultValue={search} />
             </div>
           </div>
+          <br />
+          {role == "admin" && (
+            <div className="flex items-center justify-end">
+              <Link
+                className="px-10 py-3 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white rounded-2xl"
+                href="/meditation/add"
+              >
+                Add Meditation
+              </Link>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {meditations
@@ -127,7 +141,7 @@ export default function AllMeditations() {
                     setSelectedUrl(item.link);
                     setShowDialog(true);
                   }}
-                  showBest={false}
+                  isAdmin={role == "admin"}
                   key={i}
                   item={item}
                 />

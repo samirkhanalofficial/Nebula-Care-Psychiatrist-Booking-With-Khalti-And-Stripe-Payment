@@ -12,19 +12,26 @@ class MeetingRepository {
     return meeting;
   };
   getAllMeeting = async () => {
-    const meeting = await Meeting.find({ paid: false });
+    const meeting = await Meeting.find()
+      .sort({ _id: -1 })
+      .populate(["doctor", "client"]);
     return meeting;
   };
   getMeetingById = async (id: string) => {
-    const meeting = await Meeting.findById(id);
+    const meeting = await Meeting.findById(id).populate(["doctor", "client"]);
     return meeting;
   };
   getClientMeetings = async (id: string) => {
-    const meetings = await Meeting.find({ client: id });
+    const meetings = await Meeting.find({ client: id })
+      .sort({ _id: -1 })
+
+      .populate(["doctor", "client"]);
     return meetings;
   };
   getDoctorMeetings = async (id: string) => {
-    const meetings = await Meeting.find({ doctor: id });
+    const meetings = await Meeting.find({ doctor: id })
+      .sort({ _id: -1 })
+      .populate(["doctor", "client"]);
     return meetings;
   };
   addMedicine = async (id: string, medicine: string) => {

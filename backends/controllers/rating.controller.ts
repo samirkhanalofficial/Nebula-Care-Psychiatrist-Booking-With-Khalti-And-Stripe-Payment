@@ -38,13 +38,24 @@ class RatingController {
       });
     }
 
-    if (!rating)
-      return res.status(400).json({ rating: "Error adding meeting" });
+    const ratings = await ratingService.getRatings(value.doctor);
+    let rate = 0;
+    for (var rating of ratings) {
+      rate += rating.rating;
+    }
+
+    const rateupdated = await userService.updateRating(value.doctor, rate);
+
+    if (!rateupdated)
+      return res.status(400).json({ rating: "Error updating rating" });
+
+    if (!rating) return res.status(400).json({ rating: "Error adding rating" });
 
     res.status(200).json({ rating });
   };
   getRatings = async (req: NextApiRequest, res: NextApiResponse) => {
     const doctorId = req.query.id ?? "";
+    console.log(doctorId, "hey");
     const ratings = await ratingService.getRatings(doctorId.toString());
     return res.status(200).json(ratings);
   };

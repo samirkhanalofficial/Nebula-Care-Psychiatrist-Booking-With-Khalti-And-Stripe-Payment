@@ -47,6 +47,9 @@ class UserService {
   deleteUser = async (id: string) => {
     await this.userRepository.deleteUser(id);
   };
+  updateRating = async (id: string, rating: number) => {
+    return await this.userRepository.updateRating(id, rating);
+  };
 }
 
 let userService = new UserService(userRepository);

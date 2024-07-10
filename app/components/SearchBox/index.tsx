@@ -18,7 +18,7 @@ export function SearchBox({ defaultValue = "" }) {
         type="text"
         name="q"
         className="py-6 lg:py-8 text-lg w-full text-black opacity-75 rounded-full pl-8 focus:outline-none focus:text-black"
-        placeholder="search psychiatrist..."
+        placeholder="search name..."
         autoComplete="off"
         onChange={(e) => setSearch(e.target.value)}
         value={search}

@@ -1,13 +1,16 @@
 import mongoose from "mongoose";
+import User from "./user.model";
 
 const MeetingSchema = new mongoose.Schema({
   client: {
     type: String,
     required: true,
+    ref: User,
   },
   doctor: {
     type: String,
     required: true,
+    ref: User,
   },
   date: {
     type: String,

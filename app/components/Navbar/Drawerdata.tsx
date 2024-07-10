@@ -1,5 +1,7 @@
 import React from "react";
 import Link from "next/link";
+import Signdialog from "./Signdialog";
+import Registerdialog from "./Registerdialog";
 
 interface NavigationItem {
   name: string;
@@ -12,13 +14,14 @@ const navigation: NavigationItem[] = [
   { name: "Psychiatrists", href: "/psychiatrists", current: false },
   { name: "Discussion", href: "/discussion", current: false },
   { name: "Meditation", href: "/meditation", current: false },
+  { name: "My Profile", href: "/profile", current: false },
 ];
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-const Data = () => {
+const Data = ({ isSignedIn }: { isSignedIn: boolean }) => {
   return (
     <div className="rounded-md max-w-sm w-full mx-auto">
       <div className="flex-1 space-y-4 py-1">
@@ -40,12 +43,32 @@ const Data = () => {
               </Link>
             ))}
             <div className="mt-4"></div>
-            <button className="bg-white w-full text-Blueviolet border border-semiblueviolet font-medium py-2 px-4 rounded">
-              Log In
-            </button>
-            <button className="bg-semiblueviolet w-full hover:bg-Blueviolet hover:text-white text-Blueviolet font-medium my-2 py-2 px-4 rounded">
-              Sign up
-            </button>
+            {!isSignedIn && (
+              <>
+                <Link
+                  href={"/login"}
+                  className="bg-white block text-center w-full text-Blueviolet border border-semiblueviolet font-medium py-2 px-4 rounded"
+                >
+                  SignIn
+                </Link>
+                <Link
+                  href={"/register"}
+                  className="bg-semiblueviolet block text-center w-full hover:bg-Blueviolet hover:text-white text-Blueviolet font-medium my-2 py-2 px-4 rounded"
+                >
+                  Register
+                </Link>
+              </>
+            )}
+            {isSignedIn && (
+              <>
+                <Link
+                  href={"/logout"}
+                  className="bg-white block text-center w-full text-Blueviolet border border-semiblueviolet font-medium py-2 px-4 rounded"
+                >
+                  Logout
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

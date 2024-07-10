@@ -82,11 +82,21 @@ class MeetingController {
     if (status.toString().toLowerCase() == "completed") {
       await this.meetingService.verifyMeeting(purchase_order_id.toString());
       return res.redirect(
-        `/psychiatrists/${meeting.doctor}/?success=true&meetingid=${purchase_order_id}`
+        `/psychiatrists/${encodeURIComponent(
+          meeting.doctor
+        )}/?success=true&meetingid=${encodeURIComponent(
+          purchase_order_id.toString()
+        )}`
       );
     } else {
       return res.redirect(
-        `/psychiatrists/${meeting.doctor}/?success=false&meetingid=${purchase_order_id}`
+        encodeURIComponent(
+          `/psychiatrists/${encodeURIComponent(
+            meeting.doctor
+          )}/?success=false&meetingid=${encodeURIComponent(
+            purchase_order_id.toString()
+          )}`
+        )
       );
     }
   };
