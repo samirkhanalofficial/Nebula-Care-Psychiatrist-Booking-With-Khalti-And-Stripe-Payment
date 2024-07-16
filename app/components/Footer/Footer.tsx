@@ -128,8 +128,6 @@ const footer = () => {
       <div className="py-10 md:flex items-center justify-between border-t border-t-gray-blue">
         <h4 className="text-dark-red opacity-75 text-sm text-center md:text-start font-normal">
           @{new Date().getFullYear()}.NebulaCare.All rights reserved
-          <br />
-          Developed By <Link href={"https://aideascent.com"}>Aide Ascent</Link>
         </h4>
         <div className="flex gap-5 mt-5 md:mt-0 justify-center md:justify-start">
           <h4 className="text-dark-red opacity-75 text-sm font-normal">
