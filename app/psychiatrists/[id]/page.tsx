@@ -6,11 +6,14 @@ import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 import Loading from "@/app/components/Loading";
 import DatePicker from "react-datepicker";
+import { loadStripe } from "@stripe/stripe-js";
 
 import Image from "next/image";
 import Select from "react-select";
 import useAuth from "@/hooks/useAuth";
 import { StarIcon } from "@heroicons/react/24/solid";
+import { Elements, PaymentElement } from "@stripe/react-stripe-js";
+import { MeetingType } from "@/backends/types/meeting.type";
 export type userType = {
   _id: string;
   fullName: string;
@@ -19,14 +22,16 @@ export type userType = {
   confirmPassword: string;
   date: string;
 };
-export default function Register({ params, searchParams }: any) {
+export default function BookPsychiatrist({ params, searchParams }: any) {
+  const stripePromise = loadStripe("pk_test_6pRNASCoBOKtIshFeQd4XMUh");
+
   const success = searchParams.success ?? "";
   const { isSignedIn, token } = useAuth();
   const [loading, setloading] = useState(true);
   const [formLoading, setFormLoading] = useState(false);
   const imageReg =
     "https://images.pexels.com/photos/1274260/pexels-photo-1274260.jpeg?auto=compress&cs=tinysrgb&w=600";
-
+  const [bookedslots, setBookedSlots] = useState<MeetingType[]>();
   const [date, setDate] = useState(new Date());
   const [price, setPrice] = useState("");
   const [name, setName] = useState("");
@@ -56,7 +61,26 @@ export default function Register({ params, searchParams }: any) {
       setloading(false);
     }
   }
-  async function addMeeting() {
+  async function getBookedSlots() {
+    const testId = await params.id;
+    var res = await fetch(
+      `/api/admin/meetings/booked/?doctor=${testId}&date=${
+        date.toISOString().split("T")[0]
+      }`
+    );
+    if (res.status != 200) {
+      toast.error("Error Fetching Data");
+      setloading(false);
+    } else {
+      const data = await res.json();
+      setBookedSlots(data);
+      setloading(false);
+    }
+  }
+  useEffect(() => {
+    getBookedSlots();
+  }, [date]);
+  async function addMeeting(method: string) {
     try {
       setFormLoading(true);
       var res = await fetch("/api/admin/meetings/create", {
@@ -65,6 +89,7 @@ export default function Register({ params, searchParams }: any) {
           date: date.toISOString().split("T")[0],
           time: time,
           doctor: params.id,
+          paymentMethod: method,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -111,12 +136,7 @@ export default function Register({ params, searchParams }: any) {
     );
   return (
     <>
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          addMeeting();
-        }}
-      >
+      <>
         <>
           <div className="mx-auto max-w-7xl sm:py-8 px-4 lg:px-8 ">
             <div className="flex justify-between items-center">
@@ -212,20 +232,49 @@ export default function Register({ params, searchParams }: any) {
                     options={[
                       10, 10, 11, 11, 12, 12, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6,
                       6, 7, 7, 8, 8, 9, 9, 10, 10,
-                    ].map((item, index) => ({
-                      value: `${item}:${index % 2 == 0 ? "00" : "30"} ${
-                        index < 2 ? "AM" : "PM"
-                      }`,
-                      label: `${item}:${index % 2 == 0 ? "00" : "30"} ${
-                        index < 2 ? "AM" : "PM"
-                      }`,
-                    }))}
+                    ].map((item, index) =>
+                      bookedslots?.filter(
+                        (slot) =>
+                          slot.time ==
+                          `${item}:${index % 2 == 0 ? "00" : "30"} ${
+                            index < 4 ? "AM" : "PM"
+                          }`
+                      ).length == 0
+                        ? {
+                            value: `${item}:${index % 2 == 0 ? "00" : "30"} ${
+                              index < 4 ? "AM" : "PM"
+                            }`,
+                            label: `${item}:${index % 2 == 0 ? "00" : "30"} ${
+                              index < 4 ? "AM" : "PM"
+                            }`,
+                          }
+                        : {
+                            value: "",
+                            label: `Booked`,
+                          }
+                    )}
                     placeholder={"Select a Time"}
                     onChange={(value) => value && setTime(value?.value)}
                   />
                 </div>
                 <br />
                 <button
+                  onClick={() => {
+                    addMeeting("stripe");
+                  }}
+                  disabled={formLoading}
+                  className={
+                    "roundex-md disabled:bg-gray-400 bg-purple-600 hover:bg-purple-900 active:bg-purple-300 text-white w-full p-2"
+                  }
+                >
+                  {formLoading && "Loading..."}
+                  {!formLoading && "Pay With Stripe"}
+                </button>
+                <br /> <br />
+                <button
+                  onClick={() => {
+                    addMeeting("khalti");
+                  }}
                   disabled={formLoading}
                   className={
                     "roundex-md disabled:bg-gray-400 bg-purple-600 hover:bg-purple-900 active:bg-purple-300 text-white w-full p-2"
@@ -268,7 +317,7 @@ export default function Register({ params, searchParams }: any) {
             ))}
           </div>
         )}
-      </form>
+      </>
     </>
   );
 }

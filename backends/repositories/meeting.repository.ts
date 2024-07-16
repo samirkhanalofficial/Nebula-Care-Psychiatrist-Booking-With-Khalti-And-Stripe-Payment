@@ -11,6 +11,18 @@ class MeetingRepository {
     const meeting = await Meeting.findByIdAndUpdate(id, { paid: true });
     return meeting;
   };
+  isBooked = async (doctor: string, date: string, time: string) => {
+    const meeting = await Meeting.find({ doctor, date, time, paid: true })
+      .sort({ _id: -1 })
+      .populate(["doctor", "client"]);
+    return meeting.length > 0;
+  };
+  bookedSlots = async (doctor: string, date: string) => {
+    const meeting = await Meeting.find({ doctor, date, paid: true })
+      .sort({ _id: -1 })
+      .populate(["doctor", "client"]);
+    return meeting;
+  };
   getAllMeeting = async () => {
     const meeting = await Meeting.find()
       .sort({ _id: -1 })

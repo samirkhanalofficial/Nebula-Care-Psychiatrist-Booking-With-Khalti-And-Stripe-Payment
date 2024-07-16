@@ -10,6 +10,14 @@ class MeetingService {
     const meetingData = await this.meetingRepository.addMeeting(meeting);
     return meetingData;
   };
+  isBooked = async (doctor: string, date: string, time: string) => {
+    const meeting = await this.meetingRepository.isBooked(doctor, date, time);
+    return meeting;
+  };
+  bookedSlots = async (doctor: string, date: string) => {
+    const meeting = await this.meetingRepository.bookedSlots(doctor, date);
+    return meeting;
+  };
   verifyMeeting = async (id: string) => {
     const meeting = await this.meetingRepository.verifyMeeting(id);
     return meeting;
