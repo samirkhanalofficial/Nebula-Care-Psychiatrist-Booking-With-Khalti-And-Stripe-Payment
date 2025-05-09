@@ -129,7 +129,10 @@ const footer = () => {
         <h4 className="text-dark-red opacity-75 text-sm text-center md:text-start font-normal">
           @{new Date().getFullYear()}.NebulaCare.All rights reserved
           <br />
-          Developed By <Link href={"https://aideascent.com"}>Aide Ascent</Link>
+          {
+            /* Removed Aide Ascent tag, as I no longer need to showcase it as portfolio of aideascent as aideascent has it's own portfolio now. It was added back then to help it grow */
+          }
+          Developed By <Link href={"https://samirkhanal.com"}>Samir Khanal</Link>
         </h4>
         <div className="flex gap-5 mt-5 md:mt-0 justify-center md:justify-start">
           <h4 className="text-dark-red opacity-75 text-sm font-normal">
