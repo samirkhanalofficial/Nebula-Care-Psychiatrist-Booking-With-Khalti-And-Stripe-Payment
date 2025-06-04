@@ -1,6 +1,4 @@
 "use client";
-
-import { set } from "mongoose";
 import React, { useEffect, useState } from "react";
 
 export default function AI() {
@@ -26,8 +24,9 @@ export default function AI() {
         console.log("MediaRecorder started");
         // setState("record");
         chunks = [];
-
+        if (!audioStream) return;
         let audioContext = new AudioContext();
+
         let microphone = audioContext.createMediaStreamSource(audioStream);
         let analyser = audioContext.createAnalyser();
         microphone.connect(analyser);
@@ -49,13 +48,10 @@ export default function AI() {
         // For now, download as webm. For mp3, use a backend or ffmpeg.wasm.
         const formdata = new FormData();
         formdata.append("audio", blob, "recorded-audio.webm");
-        const response = await fetch(
-          "https://ghrrsw2k-3000.inc1.devtunnels.ms/voice-to-voice",
-          {
-            method: "POST",
-            body: formdata,
-          }
-        );
+        const response = await fetch(process.env.AI_URL!, {
+          method: "POST",
+          body: formdata,
+        });
         if (response.ok) {
           const audioBlob = await response.blob();
           const url = URL.createObjectURL(audioBlob);
@@ -130,7 +126,7 @@ export default function AI() {
   }
   function init() {
     navigator.mediaDevices
-      .getUserMedia({ audio: true })
+      .getUserMedia({ audio: { channelCount: 1 } })
       .then((stream) => {
         setAudioStream(stream);
 
