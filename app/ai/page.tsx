@@ -48,7 +48,7 @@ export default function AI() {
         // For now, download as webm. For mp3, use a backend or ffmpeg.wasm.
         const formdata = new FormData();
         formdata.append("audio", blob, "recorded-audio.webm");
-        const response = await fetch(process.env.AI_URL!, {
+        const response = await fetch(process.env.NEXT_PUBLIC_AI_URL!, {
           method: "POST",
           body: formdata,
         });
