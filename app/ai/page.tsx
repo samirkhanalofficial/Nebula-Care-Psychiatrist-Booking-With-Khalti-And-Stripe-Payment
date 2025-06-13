@@ -46,18 +46,28 @@ export default function AI() {
 
         // Convert webm to mp3 using ffmpeg.wasm or similar (not natively supported in browser)
         // For now, download as webm. For mp3, use a backend or ffmpeg.wasm.
-        const formdata = new FormData();
-        formdata.append("audio", blob, "recorded-audio.webm");
-        const response = await fetch(process.env.NEXT_PUBLIC_AI_URL!, {
-          method: "POST",
-          body: formdata,
-        });
-        if (response.ok) {
-          const audioBlob = await response.blob();
-          const url = URL.createObjectURL(audioBlob);
-          setAiResponseUrl(url);
-        } else {
-          console.error("Error processing audio:", response.statusText);
+        try {
+          const formdata = new FormData();
+          formdata.append("audio", blob, "recorded-audio.webm");
+          formdata.append("lat", "24");
+          formdata.append("lng", "24");
+
+          const response = await fetch(process.env.NEXT_PUBLIC_AI_URL!, {
+            method: "POST",
+            body: formdata,
+          });
+          if (response.ok) {
+            const audioBlob = await response.blob();
+            const url = URL.createObjectURL(audioBlob);
+            setAiResponseUrl(url);
+          } else {
+            setAiResponseUrl("/audio/internet-error.wav");
+            setState("ideal");
+            console.error("Error processing audio:", response.statusText);
+          }
+        } catch (e) {
+          setAiResponseUrl("/audio/internet-error.wav");
+          setState("ideal");
         }
       };
       console.log("starting media recorder");
@@ -145,8 +155,11 @@ export default function AI() {
         <audio
           onPlay={() => setPlayingAudio(true)}
           onEnded={() => {
-            recordAudio();
+            if (state != "ideal") {
+              recordAudio();
+            }
             setPlayingAudio(false);
+            setAiResponseUrl("");
           }}
           src={aiResponseUrl}
           autoPlay
