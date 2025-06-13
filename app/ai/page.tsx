@@ -150,7 +150,7 @@ export default function AI() {
 
   useEffect(() => init(), []);
   return (
-    <div className="py-20 flex justify-center items-center">
+    <div className="w-full h-full flex justify-center items-center">
       {aiResponseUrl && (
         <audio
           onPlay={() => setPlayingAudio(true)}
@@ -198,7 +198,7 @@ export default function AI() {
             : "START"
           : ""}
 
-        {playingAudio ? "AI" : ""}
+        {playingAudio ? <span className="text-6xl">🤖</span> : ""}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import MyToastContainer from "./components/MyToastContainer";
 import { Suspense } from "react";
 import Loading from "./components/Loading";
+import AiDialog from "./components/AiDialog/AiDialog";
 
 export const metadata = {
   title: "NebulaCare",
@@ -23,6 +24,7 @@ export default function RootLayout({
         <Suspense fallback={<Loading />}>{children}</Suspense>
         <Footer />
         <MyToastContainer />
+        <AiDialog />
       </body>
     </html>
   );
