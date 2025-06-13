@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 export default function AI() {
@@ -198,7 +199,18 @@ export default function AI() {
             : "START"
           : ""}
 
-        {playingAudio ? <span className="text-6xl">🤖</span> : ""}
+        {playingAudio ? (
+          <div className="w-full h-full relative">
+            <Image
+              src={"/ai-robot-2.png"}
+              alt="NebulaCare AI"
+              fill
+              className="object-cover"
+            />
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 import AI from "@/app/ai/page";
 import { IoCloseCircleSharp } from "react-icons/io5";
 import React, { useState } from "react";
+import Image from "next/image";
 
 export default function AiDialog() {
   const CloseIcon = IoCloseCircleSharp as unknown as React.FC<{
@@ -14,8 +15,13 @@ export default function AiDialog() {
         onClick={() => setShowingDialog(true)}
         className="fixed  bottom-10  right-10 group flex items-center flex-row-reverse gap-x-2"
       >
-        <div className=" bg-blue-200 text-4xl text-white p-5 group-hover:bg-blue-400 cursor-pointer aspect-square  rounded-full flex items-center justify-center ">
-          🤖
+        <div className="relative bg-blue-200 w-20 h-20 overflow-hidden text-4xl text-white  group-hover:bg-blue-400 cursor-pointer aspect-square  rounded-full flex items-center justify-center ">
+          <Image
+            src={"/ai-robot-2.png"}
+            alt="NebulaCare AI"
+            fill
+            className="object-cover"
+          />
         </div>
         <div className="hidden group-hover:block p-2 bg-blue-400 text-white rounded-2xl">
           {" "}
